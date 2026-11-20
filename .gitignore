@@ -5,8 +5,6 @@
 
 # Java / Maven
 backend/target/
-backend/.idea/
-backend/*.iml
 
 # Node / Vue
 frontend/node_modules/
