@@ -127,7 +127,7 @@ const submitLabel = computed(() => {
             </SheetHeader>
 
             <form class="flex flex-col gap-5 px-4" @submit="onSubmit">
-                <div class="space-y-2">
+                <div class="flex flex-col gap-2">
                     <label for="title" class="text-sm font-medium">
                         Title <span class="text-destructive">*</span>
                     </label>
@@ -140,7 +140,7 @@ const submitLabel = computed(() => {
                     </p>
                 </div>
 
-                <div class="space-y-2">
+                <div class="flex flex-col gap-2">
                     <label for="description" class="text-sm font-medium">
                         Description
                     </label>

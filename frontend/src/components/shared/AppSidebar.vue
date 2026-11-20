@@ -7,10 +7,10 @@ import { Button } from '@/components/ui/button'
 import { ListTodo, Plus } from '@lucide/vue'
 import { RouterLink } from 'vue-router'
 
-import type { TaskList } from '@/features/task-lists/types/task-list.types'
+import type { TaskListSummary } from '@/features/task-lists/types/task-list.types'
 
 defineProps<{
-    taskLists: TaskList[]
+    taskLists: TaskListSummary[]
 }>()
 
 const emit = defineEmits<{
@@ -37,7 +37,6 @@ const emit = defineEmits<{
                 <Button variant="ghost" size="sm" class="h-7 gap-1.5 px-2 text-xs" aria-label="Create Task List"
                     @click="emit('create')">
                     <Plus class="size-4" />
-                    New
                 </Button>
             </div>
 
@@ -49,7 +48,7 @@ const emit = defineEmits<{
                             ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
                             : 'text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground'">
                             <ListTodo class="size-4 shrink-0" />
-                            <span class="truncate">{{ taskList.title }}</span>
+                            <span class="truncate">{{ taskList.title }} ({{ taskList.count }})</span>
                         </a>
                     </RouterLink>
                 </nav>

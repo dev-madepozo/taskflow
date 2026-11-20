@@ -1,4 +1,4 @@
-import type { Task } from '@/features/task-lists/types/task.types'
+import type { Task } from '@/features/tasks/types/task.types'
 
 export interface TaskList {
     id: string
@@ -8,6 +8,8 @@ export interface TaskList {
     progress: number
     tasks: Task[]
 }
+
+export type TaskListSummary = Omit<TaskList, 'tasks'>
 
 export interface CreateTaskListRequest {
     title: string
