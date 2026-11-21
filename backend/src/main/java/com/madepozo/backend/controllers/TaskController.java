@@ -18,6 +18,8 @@ import com.madepozo.backend.domain.entities.Task;
 import com.madepozo.backend.mappers.TaskMapper;
 import com.madepozo.backend.services.TaskService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/task-lists/{taskListId}/tasks")
 public class TaskController {
@@ -39,7 +41,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public TaskDTO createTask(@PathVariable UUID taskListId, @RequestBody TaskDTO taskDTO) {
+    public TaskDTO createTask(@PathVariable UUID taskListId, @Valid @RequestBody TaskDTO taskDTO) {
         Task createdTask = taskService.createTask(taskListId, taskMapper.fromDTO(taskDTO));
         return taskMapper.toDTO(createdTask);
     }
@@ -50,7 +52,8 @@ public class TaskController {
     }
 
     @PutMapping("/{taskId}")
-    public TaskDTO updateTask(@PathVariable UUID taskListId, @PathVariable UUID taskId, @RequestBody TaskDTO taskDTO) {
+    public TaskDTO updateTask(@PathVariable UUID taskListId, @PathVariable UUID taskId,
+            @Valid @RequestBody TaskDTO taskDTO) {
         Task updatedTask = taskService.updateTask(taskListId, taskId, taskMapper.fromDTO(taskDTO));
         return taskMapper.toDTO(updatedTask);
     }

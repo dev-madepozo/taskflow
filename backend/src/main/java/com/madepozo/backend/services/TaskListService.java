@@ -4,11 +4,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.madepozo.backend.domain.dto.TaskListSummaryDTO;
 import com.madepozo.backend.domain.entities.TaskList;
 
 public interface TaskListService {
 
-    List<TaskList> getAllTaskLists();
+    List<TaskListSummaryDTO> getAllTaskLists();
 
     TaskList createTaskList(TaskList taskList);
 

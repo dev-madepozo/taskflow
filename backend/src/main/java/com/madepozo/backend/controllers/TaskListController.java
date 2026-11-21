@@ -33,10 +33,7 @@ public class TaskListController {
 
     @GetMapping
     public List<TaskListSummaryDTO> listTaskLists() {
-        return taskListService.getAllTaskLists()
-                .stream()
-                .map(taskListMapper::toSummaryDTO)
-                .toList();
+        return taskListService.getAllTaskLists();
     }
 
     @GetMapping("/{taskListId}")

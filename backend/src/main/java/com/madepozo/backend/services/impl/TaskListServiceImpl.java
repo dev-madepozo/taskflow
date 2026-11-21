@@ -7,7 +7,9 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.madepozo.backend.domain.dto.TaskListSummaryDTO;
 import com.madepozo.backend.domain.entities.TaskList;
+import com.madepozo.backend.exceptions.ResourceNotFoundException;
 import com.madepozo.backend.repositories.TaskListRepository;
 import com.madepozo.backend.services.TaskListService;
 
@@ -21,8 +23,8 @@ public class TaskListServiceImpl implements TaskListService {
     }
 
     @Override
-    public List<TaskList> getAllTaskLists() {
-        return taskListRepository.findAll();
+    public List<TaskListSummaryDTO> getAllTaskLists() {
+        return taskListRepository.findAllSummaries();
     }
 
     @Override
@@ -54,7 +56,7 @@ public class TaskListServiceImpl implements TaskListService {
     @Override
     public TaskList updateTaskList(UUID taskListId, TaskList taskList) {
         TaskList existingTaskList = taskListRepository.findById(taskListId)
-                .orElseThrow(() -> new IllegalArgumentException("Task List not found."));
+                .orElseThrow(() -> new ResourceNotFoundException("Task List not found with ID: " + taskListId));
 
         existingTaskList.setTitle(taskList.getTitle());
         existingTaskList.setDescription(taskList.getDescription());

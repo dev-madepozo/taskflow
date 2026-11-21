@@ -11,6 +11,7 @@ import com.madepozo.backend.domain.entities.Task;
 import com.madepozo.backend.domain.entities.TaskList;
 import com.madepozo.backend.domain.enums.TaskPriority;
 import com.madepozo.backend.domain.enums.TaskStatus;
+import com.madepozo.backend.exceptions.ResourceNotFoundException;
 import com.madepozo.backend.repositories.TaskListRepository;
 import com.madepozo.backend.repositories.TaskRepository;
 import com.madepozo.backend.services.TaskService;
@@ -40,7 +41,8 @@ public class TaskServiceImpl implements TaskService {
         TaskStatus taskStatus = TaskStatus.OPEN;
 
         TaskList taskList = taskListRepository.findById(taskListId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Task List ID provided."));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Task List not found with ID: " + taskListId));
 
         LocalDateTime now = LocalDateTime.now();
 

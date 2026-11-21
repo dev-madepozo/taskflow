@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 import com.madepozo.backend.domain.dto.TaskListDTO;
-import com.madepozo.backend.domain.dto.TaskListSummaryDTO;
 import com.madepozo.backend.domain.entities.Task;
 import com.madepozo.backend.domain.entities.TaskList;
 import com.madepozo.backend.domain.enums.TaskStatus;
@@ -48,16 +47,6 @@ public class TaskListMapperImpl implements TaskListMapper {
                 calculateTaskListProgress(taskList.getTasks()),
                 Optional.ofNullable(taskList.getTasks())
                         .map(tasks -> tasks.stream().map(taskMapper::toDTO).toList()).orElse(null));
-    }
-
-    @Override
-    public TaskListSummaryDTO toSummaryDTO(TaskList taskList) {
-        return new TaskListSummaryDTO(
-                taskList.getId(),
-                taskList.getTitle(),
-                taskList.getDescription(),
-                Optional.ofNullable(taskList.getTasks())
-                        .map(List::size).orElse(0));
     }
 
     private Double calculateTaskListProgress(List<Task> tasks) {

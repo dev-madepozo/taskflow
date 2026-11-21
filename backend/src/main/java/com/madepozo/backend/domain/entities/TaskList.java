@@ -23,10 +23,10 @@ public class TaskList {
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name = "title", nullable = false)
+    @Column(name = "title", nullable = false, length = 150)
     private String title;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 1000)
     private String description;
 
     @Column(name = "created_at", nullable = false)

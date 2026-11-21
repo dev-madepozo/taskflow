@@ -6,6 +6,6 @@ public record TaskListSummaryDTO(
         UUID id,
         String title,
         String description,
-        Integer count) {
-
+        Long count,
+        Double progress) {
 }
