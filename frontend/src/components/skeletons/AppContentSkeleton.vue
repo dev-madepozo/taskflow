@@ -5,8 +5,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 </script>
 
 <template>
-    <main class="h-full min-w-0 flex-1 overflow-y-auto">
-        <div class="w-full p-6">
+    <main class="h-full min-w-0 flex-1 overflow-y-auto bg-muted/20">
+        <div class="mx-auto w-full max-w-[1600px] space-y-8 p-6 lg:p-8">
 
             <!-- Task List Header -->
             <section class="space-y-4">
@@ -17,8 +17,8 @@ import { Skeleton } from '@/components/ui/skeleton'
                     </div>
 
                     <div class="flex shrink-0 gap-2">
-                        <Skeleton class="size-9 rounded-md" />
-                        <Skeleton class="size-9 rounded-md" />
+                        <Skeleton class="size-9 rounded-lg" />
+                        <Skeleton class="size-9 rounded-lg" />
                     </div>
                 </div>
 
@@ -45,11 +45,11 @@ import { Skeleton } from '@/components/ui/skeleton'
                 </div>
 
                 <!-- Tasks Table -->
-                <div class="overflow-hidden rounded-lg border border-border">
+                <div class="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
 
                     <!-- Table Header -->
                     <div
-                        class="grid grid-cols-[48px_minmax(0,1fr)_120px_140px_88px] items-center gap-4 border-b border-border bg-muted/50 px-4 py-3">
+                        class="grid grid-cols-[48px_minmax(0,1fr)_120px_140px_88px] items-center gap-4 border-b border-border bg-muted/40 px-4 py-4">
                         <Skeleton class="h-3 w-8" />
                         <Skeleton class="h-3 w-12" />
                         <Skeleton class="h-3 w-16" />
@@ -59,7 +59,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 
                     <!-- Table Rows -->
                     <div v-for="item in 5" :key="item"
-                        class="grid grid-cols-[48px_minmax(0,1fr)_120px_140px_88px] items-center gap-4 border-b border-border px-4 py-4 last:border-b-0">
+                        class="grid grid-cols-[48px_minmax(0,1fr)_120px_140px_88px] items-center gap-4 border-b border-border px-4 py-5 last:border-b-0">
                         <Skeleton class="size-4 rounded" />
 
                         <Skeleton class="h-4" :class="item === 2 ? 'w-36' : 'w-48'" />

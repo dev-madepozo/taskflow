@@ -303,16 +303,17 @@ async function confirmDeleteTask() {
             </Button>
         </section>
 
-        <section v-else-if="taskList" class="mx-auto flex w-full max-w-5xl flex-col gap-8 p-6">
+        <section v-else-if="taskList" class="mx-auto flex w-full max-w-6xl flex-col gap-8 p-6 lg:p-8">
             <!-- Task List Header -->
-            <header class="flex items-start justify-between gap-4 p-4">
+            <header
+                class="flex items-start justify-between gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
                 <div class="flex min-w-0 items-start gap-4">
-                    <div class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-                        <Folder class="size-6 text-primary" />
+                    <div class="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary shadow-sm">
+                        <Folder class="size-7 text-primary-foreground" />
                     </div>
 
                     <div class="min-w-0 space-y-1">
-                        <h1 class="text-2xl font-semibold tracking-tight">
+                        <h1 class="text-2xl font-bold tracking-tight">
                             {{ taskList.title }}
                         </h1>
 
@@ -387,44 +388,54 @@ async function confirmDeleteTask() {
                 </div>
 
                 <!-- Tasks Table -->
-                <div v-else class="overflow-hidden rounded-xl border">
+                <div v-else class="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
                     <table class="w-full text-sm">
-                        <thead class="bg-muted/50">
-                            <tr class="text-left">
-                                <th class="px-4 py-3 font-medium text-center">Completed</th>
-                                <th class="px-4 py-3 font-medium">Title</th>
-                                <th class="px-4 py-3 font-medium text-center">Priority</th>
-                                <th class="px-4 py-3 font-medium text-center">Due Date</th>
-                                <th class="px-4 py-3 font-medium text-center">Actions</th>
+                        <thead class="bg-muted/40">
+                            <tr class="border-b border-border text-left">
+                                <th
+                                    class="px-4 py-4 text-center text-xs font-semibold tracking-wide text-muted-foreground">
+                                    Completed</th>
+                                <th class="px-4 py-4 text-xs font-semibold tracking-wide text-muted-foreground">Title
+                                </th>
+                                <th
+                                    class="px-4 py-4 text-center text-xs font-semibold tracking-wide text-muted-foreground">
+                                    Priority</th>
+                                <th
+                                    class="px-4 py-4 text-center text-xs font-semibold tracking-wide text-muted-foreground">
+                                    Due Date</th>
+                                <th
+                                    class="px-4 py-4 text-center text-xs font-semibold tracking-wide text-muted-foreground">
+                                    Actions</th>
                             </tr>
                         </thead>
 
-                        <tbody class="divide-y">
-                            <tr v-for="task in tasks" :key="task.id">
-                                <td class="px-3 py-2 text-center">
+                        <tbody class="divide-y divide-border">
+                            <tr v-for="task in tasks" :key="task.id"
+                                class="cursor-default transition-colors duration-150 hover:bg-muted">
+                                <td class="px-3 py-3 text-center">
                                     <input type="checkbox" :checked="task.status === 'CLOSED'" disabled
                                         class="size-4 rounded accent-primary" />
                                 </td>
 
-                                <td class="px-3 py-2 font-medium">
+                                <td class="px-3 py-3 font-medium">
                                     {{ task.title }}
                                 </td>
 
-                                <td class="px-3 py-2 text-center">
+                                <td class="px-3 py-3 text-center">
                                     <span class="rounded-full px-2.5 py-1 text-xs font-medium" :class="{
-                                        'bg-priority-low/10 text-priority-low': task.priority === 'LOW',
-                                        'bg-priority-medium/10 text-priority-medium': task.priority === 'MEDIUM',
-                                        'bg-priority-high/10 text-priority-high': task.priority === 'HIGH',
+                                        'bg-priority-low/15 text-priority-low': task.priority === 'LOW',
+                                        'bg-priority-medium/15 text-priority-medium': task.priority === 'MEDIUM',
+                                        'bg-priority-high/15 text-priority-high': task.priority === 'HIGH',
                                     }">
                                         {{ task.priority.charAt(0) + task.priority.slice(1).toLowerCase() }}
                                     </span>
                                 </td>
 
-                                <td class="px-3 py-2 text-muted-foreground text-center">
+                                <td class="px-3 py-3 text-muted-foreground text-center">
                                     {{ formatDate(task.dueDate) }}
                                 </td>
 
-                                <td class="px-3 py-2 text-muted-foreground space-x-1 text-center">
+                                <td class="px-3 py-3 text-muted-foreground space-x-1 text-center">
                                     <Button variant="ghost" size="icon"
                                         class="size-8 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-700 dark:text-indigo-400 dark:hover:bg-indigo-950"
                                         aria-label="Edit task" title="Edit task" @click="handleEditTask(task)">
@@ -440,6 +451,19 @@ async function confirmDeleteTask() {
                             </tr>
                         </tbody>
                     </table>
+                    <div class="flex items-center justify-between border-t border-border bg-card px-4 py-4">
+                        <p class="text-sm text-muted-foreground">
+                            Showing
+                            <span class="font-medium text-foreground">{{ tasks.length }}</span>
+                            of
+                            <span class="font-medium text-foreground">{{ taskList.count }}</span>
+                            {{ taskList.count === 1 ? 'task' : 'tasks' }}
+                        </p>
+
+                        <p class="text-xs text-muted-foreground">
+                            All tasks
+                        </p>
+                    </div>
                 </div>
             </section>
 

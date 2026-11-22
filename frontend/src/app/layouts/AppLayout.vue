@@ -79,10 +79,10 @@ async function handleCreateTaskList(payload: CreateTaskListRequest) {
     <AppLayoutSkeleton v-if="!isDesignSystem && isPending" />
 
     <!-- Application -->
-    <div v-else class="flex h-dvh overflow-hidden bg-background">
+    <div v-else class="flex h-dvh overflow-hidden bg-muted/30">
         <AppSidebar :task-lists="taskLists ?? []" @create="isCreateSheetOpen = true" />
 
-        <main class="h-full min-w-0 flex-1 overflow-y-auto">
+        <main class="h-full min-w-0 flex-1 overflow-y-auto bg-background">
             <!-- Redirecting to first Task List -->
             <AppContentSkeleton v-if="shouldRedirectHome" />
 

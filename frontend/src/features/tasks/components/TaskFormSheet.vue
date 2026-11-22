@@ -100,9 +100,9 @@ const onSubmit = handleSubmit((values) => {
 
 <template>
     <Sheet :open="open" @update:open="emit('update:open', $event)">
-        <SheetContent class="flex w-full flex-col gap-0 sm:max-w-md">
-            <SheetHeader class="border-b px-6 py-5">
-                <SheetTitle>
+        <SheetContent class="flex w-full flex-col gap-0 border-l border-border bg-card p-0 sm:max-w-md">
+            <SheetHeader class="border-b border-border px-6 py-6">
+                <SheetTitle class="text-xl font-bold tracking-tight">
                     {{ props.mode === 'create' ? 'Create Task' : 'Edit Task' }}
                 </SheetTitle>
 
@@ -116,10 +116,10 @@ const onSubmit = handleSubmit((values) => {
             </SheetHeader>
 
             <form class="flex min-h-0 flex-1 flex-col" @submit="onSubmit">
-                <div class="flex-1 space-y-5 overflow-y-auto px-6 py-6">
+                <div class="flex-1 space-y-6 overflow-y-auto px-6 py-6">
                     <!-- Title -->
                     <div class="flex flex-col gap-2">
-                        <label for="task-title" class="text-sm font-medium leading-none">
+                        <label for="task-title" class="text-sm font-semibold text-foreground">
                             Title <span class="text-destructive">*</span>
                         </label>
 
@@ -133,7 +133,7 @@ const onSubmit = handleSubmit((values) => {
 
                     <!-- Description -->
                     <div class="flex flex-col gap-2">
-                        <label for="task-description" class="text-sm font-medium leading-none">
+                        <label for="task-description" class="text-sm font-semibold text-foreground">
                             Description
                         </label>
 
@@ -148,7 +148,7 @@ const onSubmit = handleSubmit((values) => {
 
                     <!-- Due Date -->
                     <div class="flex flex-col gap-2">
-                        <label for="task-due-date" class="text-sm font-medium leading-none">
+                        <label for="task-due-date" class="text-sm font-semibold text-foreground">
                             Due Date
                         </label>
 
@@ -167,7 +167,7 @@ const onSubmit = handleSubmit((values) => {
 
                     <!-- Priority -->
                     <div class="flex flex-col gap-3">
-                        <span class="text-sm font-medium leading-none">
+                        <span class="text-sm font-semibold text-foreground">
                             Priority <span class="text-destructive">*</span>
                         </span>
 
@@ -215,13 +215,14 @@ const onSubmit = handleSubmit((values) => {
                 </div>
 
                 <!-- Footer -->
-                <SheetFooter class="border-t px-6 py-4 sm:flex-row sm:justify-end">
+                <SheetFooter class="border-t border-border bg-muted/20 px-6 py-5 sm:flex-row sm:justify-end">
                     <Button type="button" variant="outline" :disabled="props.loading"
                         @click="emit('update:open', false)">
                         Cancel
                     </Button>
 
-                    <Button type="submit" :disabled="props.loading || isSubmitting || !isFormValid">
+                    <Button type="submit" :disabled="props.loading || isSubmitting || !isFormValid"
+                        class="rounded-lg font-semibold shadow-sm">
                         {{
                             props.loading
                                 ? 'Saving...'

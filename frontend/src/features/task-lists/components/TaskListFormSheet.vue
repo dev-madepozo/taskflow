@@ -118,17 +118,17 @@ const submitLabel = computed(() => {
 
 <template>
     <Sheet :open="open" @update:open="emit('update:open', $event)">
-        <SheetContent side="right" class="w-full sm:max-w-md">
-            <SheetHeader>
-                <SheetTitle>{{ formTitle }}</SheetTitle>
+        <SheetContent side="right" class="flex w-full flex-col gap-0 border-l border-border bg-card p-0 sm:max-w-md">
+            <SheetHeader class="border-b border-border px-6 py-6">
+                <SheetTitle class="text-xl font-bold tracking-tight">{{ formTitle }}</SheetTitle>
                 <SheetDescription>
                     {{ formDescription }}
                 </SheetDescription>
             </SheetHeader>
 
-            <form class="flex flex-col gap-5 px-4" @submit="onSubmit">
+            <form class="flex flex-1 flex-col gap-6 overflow-y-auto px-6 py-6" @submit="onSubmit">
                 <div class="flex flex-col gap-2">
-                    <label for="title" class="text-sm font-medium">
+                    <label for="title" class="text-sm font-semibold text-foreground">
                         Title <span class="text-destructive">*</span>
                     </label>
 
@@ -141,7 +141,7 @@ const submitLabel = computed(() => {
                 </div>
 
                 <div class="flex flex-col gap-2">
-                    <label for="description" class="text-sm font-medium">
+                    <label for="description" class="text-sm font-semibold text-foreground">
                         Description
                     </label>
 
@@ -153,19 +153,20 @@ const submitLabel = computed(() => {
                     </p>
                 </div>
 
-                <div class="flex justify-end gap-2">
+                <div class="mt-auto flex justify-end gap-3 border-t border-border bg-muted/20 px-6 py-5">
                     <Button type="button" variant="outline" :disabled="props.loading"
                         @click="emit('update:open', false)">
                         Cancel
                     </Button>
 
-                    <Button type="submit" :disabled="!isFormValid || props.loading">
+                    <Button type="submit" :disabled="!isFormValid || props.loading"
+                        class="rounded-lg font-semibold shadow-sm">
                         {{ submitLabel }}
                     </Button>
                 </div>
 
                 <div v-if="props.serverError" role="alert"
-                    class="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
+                    class="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
                     {{ props.serverError }}
                 </div>
             </form>
