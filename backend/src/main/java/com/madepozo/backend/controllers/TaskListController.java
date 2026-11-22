@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.madepozo.backend.domain.dto.TaskListDTO;
 import com.madepozo.backend.domain.dto.TaskListSummaryDTO;
 import com.madepozo.backend.domain.entities.TaskList;
+import com.madepozo.backend.exceptions.ResourceNotFoundException;
 import com.madepozo.backend.mappers.TaskListMapper;
 import com.madepozo.backend.services.TaskListService;
 
@@ -37,8 +38,10 @@ public class TaskListController {
     }
 
     @GetMapping("/{taskListId}")
-    public Optional<TaskListDTO> getTaskList(@PathVariable UUID taskListId) {
-        return taskListService.getTaskList(taskListId).map(taskListMapper::toDTO);
+    public TaskListDTO getTaskList(@PathVariable UUID taskListId) {
+        TaskList tasklist = taskListService.getTaskList(taskListId)
+                .orElseThrow(() -> new ResourceNotFoundException("Task List not found with ID: " + taskListId));
+        return taskListMapper.toDTO(tasklist);
     }
 
     @PostMapping

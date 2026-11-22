@@ -50,7 +50,7 @@ public class TaskListServiceImpl implements TaskListService {
 
     @Override
     public Optional<TaskList> getTaskList(UUID id) {
-        return taskListRepository.findById(id);
+        return taskListRepository.findDetailedById(id);
     }
 
     @Override
