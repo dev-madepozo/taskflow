@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/sheet'
 
 import type { CreateTaskListRequest } from '../types/task-list.types'
+import SheetFooter from '@/components/ui/sheet/SheetFooter.vue'
 
 interface Props {
     open: boolean
@@ -126,34 +127,36 @@ const submitLabel = computed(() => {
                 </SheetDescription>
             </SheetHeader>
 
-            <form class="flex flex-1 flex-col gap-6 overflow-y-auto px-6 py-6" @submit="onSubmit">
-                <div class="flex flex-col gap-2">
-                    <label for="title" class="text-sm font-semibold text-foreground">
-                        Title <span class="text-destructive">*</span>
-                    </label>
+            <form class="flex min-h-0 flex-1 flex-col" @submit="onSubmit">
+                <div class="flex-1 space-y-6 overflow-y-auto px-6 py-6">
+                    <div class="flex flex-col gap-2">
+                        <label for="title" class="text-sm font-semibold text-foreground">
+                            Title <span class="text-destructive">*</span>
+                        </label>
 
-                    <Input id="title" v-model="title" v-bind="titleAttrs" maxlength="80"
-                        placeholder="e.g. Work projects" />
+                        <Input id="title" v-model="title" v-bind="titleAttrs" maxlength="80"
+                            placeholder="e.g. Work projects" />
 
-                    <p v-if="errors.title" class="text-sm text-destructive">
-                        {{ errors.title }}
-                    </p>
+                        <p v-if="errors.title" class="text-sm text-destructive">
+                            {{ errors.title }}
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <label for="description" class="text-sm font-semibold text-foreground">
+                            Description
+                        </label>
+
+                        <Textarea id="description" v-model="description" v-bind="descriptionAttrs" maxlength="500"
+                            placeholder="What is this list about?" class="min-h-28" />
+
+                        <p v-if="errors.description" class="text-sm text-destructive">
+                            {{ errors.description }}
+                        </p>
+                    </div>
                 </div>
 
-                <div class="flex flex-col gap-2">
-                    <label for="description" class="text-sm font-semibold text-foreground">
-                        Description
-                    </label>
-
-                    <Textarea id="description" v-model="description" v-bind="descriptionAttrs" maxlength="500"
-                        placeholder="What is this list about?" class="min-h-28" />
-
-                    <p v-if="errors.description" class="text-sm text-destructive">
-                        {{ errors.description }}
-                    </p>
-                </div>
-
-                <div class="mt-auto flex justify-end gap-3 border-t border-border bg-muted/20 px-6 py-5">
+                <SheetFooter class="border-t border-border bg-muted/20 px-6 py-5 sm:flex-row sm:justify-end">
                     <Button type="button" variant="outline" :disabled="props.loading"
                         @click="emit('update:open', false)">
                         Cancel
@@ -163,12 +166,12 @@ const submitLabel = computed(() => {
                         class="rounded-lg font-semibold shadow-sm">
                         {{ submitLabel }}
                     </Button>
-                </div>
 
-                <div v-if="props.serverError" role="alert"
-                    class="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
-                    {{ props.serverError }}
-                </div>
+                    <div v-if="props.serverError" role="alert"
+                        class="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
+                        {{ props.serverError }}
+                    </div>
+                </SheetFooter>
             </form>
         </SheetContent>
     </Sheet>

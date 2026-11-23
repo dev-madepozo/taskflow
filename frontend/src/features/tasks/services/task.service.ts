@@ -3,13 +3,20 @@ import api from "@/lib/axios"
 import type {
     CreateTaskRequest,
     Task,
+    TaskPageResponse,
+    TaskStatus,
     UpdateTaskRequest
 } from '../types/task.types'
 
-export const taskService = {
-    async getAll(taskListId: string): Promise<Task[]> {
-        const { data } = await api.get<Task[]>(`/task-lists/${taskListId}/tasks`)
+type Params = {
+    page?: number
+    size?: number
+    status?: TaskStatus
+}
 
+export const taskService = {
+    async getAll(taskListId: string, params: Params = {}): Promise<TaskPageResponse> {
+        const { data } = await api.get<TaskPageResponse>(`/task-lists/${taskListId}/tasks`, { params })
         return data
     },
     async create(taskListId: string, payload: CreateTaskRequest): Promise<Task> {

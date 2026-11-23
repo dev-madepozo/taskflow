@@ -39,6 +39,7 @@ import type {
     CreateTaskRequest,
     UpdateTaskRequest,
     Task,
+    TaskStatus,
 } from '@/features/tasks/types/task.types'
 import { formatDate } from '@/lib/date'
 
@@ -113,13 +114,21 @@ async function handleDelete() {
 
 /* Composables for task operations */
 
+const currentPage = ref(0)
+const pageSize = ref(10)
+const selectedStatus = ref<TaskStatus | undefined>()
+
 const {
-    data: tasks,
+    data: tasksResponse,
     isPending: isTasksPending,
     isError: isTasksError,
     error: tasksError,
     refetch: refetchTasks,
-} = useTasks(taskListId)
+} = useTasks(taskListId, {
+    page: currentPage,
+    size: pageSize,
+    status: selectedStatus
+})
 
 const {
     mutateAsync: createTask,
@@ -146,6 +155,17 @@ const selectedTask = ref<Task | null>(null)
 const taskToDelete = ref<Task | null>(null)
 const isTaskSheetOpen = ref(false)
 const isDeleteTaskDialogOpen = ref(false)
+const tasks = computed(() => tasksResponse.value?.content ?? [])
+
+// pagination control
+const totalTasks = computed(() => tasksResponse.value?.totalElements ?? 0)
+const totalPages = computed(() => tasksResponse.value?.totalPages ?? 0)
+const completedTasks = computed(() =>
+    tasks.value.filter(task => task.status === 'CLOSED').length
+)
+const progress = computed(() =>
+    totalTasks.value ? Math.round((completedTasks.value / totalTasks.value) * 100) : 0
+)
 
 const taskFormMode = computed<'create' | 'edit'>(() =>
     selectedTask.value ? 'edit' : 'create',
@@ -184,6 +204,16 @@ const deleteTaskServerError = computed(() =>
         ? deleteTaskError.value.message
         : null,
 )
+
+function changeStatus(status?: TaskStatus) {
+    selectedStatus.value = status
+    currentPage.value = 0
+}
+
+function changePage(page: number) {
+    if (page < 0 || page >= totalPages.value) return
+    currentPage.value = page
+}
 
 function handleCreateTask() {
     selectedTask.value = null
@@ -258,6 +288,33 @@ async function handleUpdateTask(values: TaskFormValues) {
         toast.success('Task updated successfully.')
     } catch (error) {
         console.error('Failed to update task:', error)
+    }
+}
+
+async function handleToggleTaskStatus(task: Task) {
+    const payload: UpdateTaskRequest = {
+        title: task.title,
+        description: task.description,
+        dueDate: task.dueDate,
+        priority: task.priority,
+        status: task.status === 'OPEN' ? 'CLOSED' : 'OPEN',
+    }
+
+    try {
+        await updateTask({
+            taskListId: taskListId.value,
+            taskId: task.id,
+            payload,
+        })
+
+        toast.success(
+            payload.status === 'CLOSED'
+                ? 'Task completed.'
+                : 'Task reopened.'
+        )
+    } catch (error) {
+        toast.error('Unable to update task status.')
+        console.error('Failed to update task status:', error)
     }
 }
 
@@ -339,21 +396,52 @@ async function confirmDeleteTask() {
             <!-- Tasks Section -->
             <section class="space-y-5">
                 <!-- Section Header -->
-                <div class="flex items-center justify-between gap-4">
+                <div class="flex flex-wrap items-center justify-between gap-4">
                     <div class="space-y-1">
-                        <h2 class="text-lg font-semibold tracking-tight">
-                            Tasks
-                        </h2>
-
+                        <h2 class="text-lg font-semibold tracking-tight">Tasks</h2>
                         <p class="text-sm text-muted-foreground">
-                            {{ taskList.count }}
-                            {{ taskList.count === 1 ? 'task' : 'tasks' }}
+                            {{ totalTasks }} {{ totalTasks === 1 ? 'task' : 'tasks' }}
                         </p>
                     </div>
 
                     <Button @click="handleCreateTask">
-                        <Plus class="size-4" /> Add Task
+                        <Plus class="size-4" />
+                        Add Task
                     </Button>
+                </div>
+
+                <div class="space-y-3 rounded-xl border border-border bg-card p-4">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="font-medium">Progress</span>
+                        <span class="text-muted-foreground">
+                            {{ completedTasks }} of {{ totalTasks }} completed
+                        </span>
+                    </div>
+
+                    <div class="h-2 overflow-hidden rounded-full bg-muted">
+                        <div class="h-full rounded-full bg-primary transition-all" :style="{ width: `${progress}%` }" />
+                    </div>
+
+                    <p class="text-right text-xs text-muted-foreground">{{ progress }}%</p>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex flex-wrap gap-2">
+                        <Button size="sm" :variant="selectedStatus === undefined ? 'default' : 'outline'"
+                            @click="changeStatus(undefined)">
+                            All
+                        </Button>
+
+                        <Button size="sm" :variant="selectedStatus === 'OPEN' ? 'default' : 'outline'"
+                            @click="changeStatus('OPEN')">
+                            Pending
+                        </Button>
+
+                        <Button size="sm" :variant="selectedStatus === 'CLOSED' ? 'default' : 'outline'"
+                            @click="changeStatus('CLOSED')">
+                            Completed
+                        </Button>
+                    </div>
                 </div>
 
                 <!-- Tasks Content -->
@@ -373,17 +461,22 @@ async function confirmDeleteTask() {
                 </div>
 
                 <!-- Empty State -->
-                <div v-else-if="!tasks?.length"
+                <div v-else-if="!tasks.length"
                     class="flex min-h-72 flex-col items-center justify-center gap-3 rounded-xl border border-dashed bg-card/50 p-8 text-center">
                     <div class="flex size-14 items-center justify-center rounded-2xl bg-primary/10">
                         <ListTodo class="size-7 text-primary" />
                     </div>
 
-                    <h3 class="font-medium">No tasks yet</h3>
+                    <h3 class="font-medium">
+                        {{ selectedStatus ? 'No matching tasks' : 'No tasks yet' }}
+                    </h3>
 
                     <p class="max-w-sm text-sm text-muted-foreground">
-                        Start organizing your work by adding your first task.
-                        Break your goals into smaller, manageable steps.
+                        {{
+                            selectedStatus
+                                ? 'There are no tasks matching this filter.'
+                                : 'Start organizing your work by adding your first task.'
+                        }}
                     </p>
                 </div>
 
@@ -413,8 +506,11 @@ async function confirmDeleteTask() {
                             <tr v-for="task in tasks" :key="task.id"
                                 class="cursor-default transition-colors duration-150 hover:bg-muted">
                                 <td class="px-3 py-3 text-center">
-                                    <input type="checkbox" :checked="task.status === 'CLOSED'" disabled
-                                        class="size-4 rounded accent-primary" />
+                                    <input type="checkbox" :checked="task.status === 'CLOSED'"
+                                        :disabled="isUpdatingTask"
+                                        class="size-4 cursor-pointer rounded accent-primary disabled:cursor-not-allowed"
+                                        :aria-label="`Mark ${task.title} as ${task.status === 'OPEN' ? 'completed' : 'pending'}`"
+                                        @change="handleToggleTaskStatus(task)" />
                                 </td>
 
                                 <td class="px-3 py-3 font-medium">
@@ -451,18 +547,36 @@ async function confirmDeleteTask() {
                             </tr>
                         </tbody>
                     </table>
-                    <div class="flex items-center justify-between border-t border-border bg-card px-4 py-4">
-                        <p class="text-sm text-muted-foreground">
-                            Showing
-                            <span class="font-medium text-foreground">{{ tasks.length }}</span>
-                            of
-                            <span class="font-medium text-foreground">{{ taskList.count }}</span>
-                            {{ taskList.count === 1 ? 'task' : 'tasks' }}
-                        </p>
+                    <div
+                        class="flex flex-wrap items-center justify-between gap-4 border-t border-border bg-card px-4 py-4">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <p class="text-sm text-muted-foreground">
+                                Showing
+                                <span class="font-medium text-foreground">
+                                    {{ totalTasks === 0 ? 0 : currentPage * pageSize + 1 }}–{{ Math.min((currentPage +
+                                        1) * pageSize, totalTasks) }}
+                                </span>
+                                of
+                                <span class="font-medium text-foreground">{{ totalTasks }}</span>
+                                tasks
+                            </p>
+                        </div>
 
-                        <p class="text-xs text-muted-foreground">
-                            All tasks
-                        </p>
+                        <div class="flex items-center gap-2">
+                            <Button variant="outline" size="sm" :disabled="currentPage === 0"
+                                @click="changePage(currentPage - 1)">
+                                Previous
+                            </Button>
+
+                            <span class="min-w-20 text-center text-sm text-muted-foreground">
+                                Page {{ currentPage + 1 }} of {{ Math.max(totalPages, 1) }}
+                            </span>
+
+                            <Button variant="outline" size="sm" :disabled="currentPage >= totalPages - 1"
+                                @click="changePage(currentPage + 1)">
+                                Next
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </section>

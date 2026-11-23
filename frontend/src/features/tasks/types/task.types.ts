@@ -27,3 +27,13 @@ export interface CreateTaskRequest {
 }
 
 export type UpdateTaskRequest = CreateTaskRequest
+
+export interface TaskPageResponse {
+    content: Task[]
+    page: number
+    size: number
+    totalElements: number
+    totalPages: number
+    first: boolean
+    last: boolean
+}
