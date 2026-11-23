@@ -2,13 +2,23 @@
 
 A full-stack task management application built with **Spring Boot, Vue 3, TypeScript, and PostgreSQL**.
 
-TaskFlow helps users organize their work through task lists and individual tasks, with priorities, due dates, and progress tracking.
+TaskFlow helps users organize their work through task lists and individual tasks, with priorities, due dates, status tracking, and progress monitoring.
+
+## Live Demo
+
+**Try TaskFlow:** [Open Live Demo](https://taskflow-beta-sooty.vercel.app/)
+
+## Screenshots
+
+### Task Management
+
+![TaskFlow - Task List Dashboard](docs/images/taskflow-dashboard.png)
 
 ## Features
 
 ### Task Lists
 - Create, edit, and delete task lists.
-- View all task lists in a sidebar.
+- Navigate between task lists using the sidebar.
 - Display the number of tasks in each list.
 - View task list details and progress.
 
@@ -17,14 +27,15 @@ TaskFlow helps users organize their work through task lists and individual tasks
 - Assign priorities: Low, Medium, and High.
 - Set due dates.
 - Track task completion status.
-- View tasks associated with a specific task list.
+- Filter tasks by status (Open and Closed).
+- Paginate task results directly through the backend.
 
 ### User Interface
 - Light and dark themes.
-- Responsive interface (in progress).
 - Form validation and error handling.
 - Loading and empty states.
 - Confirmation dialogs for destructive actions.
+- Responsive interface (in progress).
 
 ## Tech Stack
 
@@ -85,7 +96,7 @@ Spring Boot Backend
 PostgreSQL Database
 ```
 
-The frontend communicates with the backend through REST endpoints. The backend handles business logic, persistence, and database interactions.
+The frontend communicates with the backend through REST endpoints. The backend handles business logic, persistence, pagination, filtering, and database interactions.
 
 ## Getting Started
 
@@ -140,8 +151,6 @@ docker compose ps
 
 ### 4. Start the backend
 
-The backend runs locally using Spring Boot.
-
 Make sure the database environment variables are available to the Spring Boot process, then run:
 
 ```bash
@@ -170,7 +179,7 @@ Vite will display the local frontend URL in the terminal.
 | Method | Endpoint | Description |
 |---|---|---|
 | GET | `/task-lists` | Retrieve all task lists |
-| GET | `/task-lists/{id}` | Retrieve a task list with its tasks |
+| GET | `/task-lists/{id}` | Retrieve a task list |
 | POST | `/task-lists` | Create a task list |
 | PUT | `/task-lists/{id}` | Update a task list |
 | DELETE | `/task-lists/{id}` | Delete a task list |
@@ -179,31 +188,13 @@ Vite will display the local frontend URL in the terminal.
 
 | Method | Endpoint | Description |
 |---|---|---|
-| GET | `/task-lists/{taskListId}/tasks` | Retrieve tasks |
+| GET | `/task-lists/{taskListId}/tasks` | Retrieve paginated tasks |
 | POST | `/task-lists/{taskListId}/tasks` | Create a task |
 | PUT | `/task-lists/{taskListId}/tasks/{taskId}` | Update a task |
 | DELETE | `/task-lists/{taskListId}/tasks/{taskId}` | Delete a task |
 
-## Development Workflow
+The task listing endpoint supports pagination and optional status filtering:
 
-The project uses Git for version control and GitHub for collaboration and automation.
-
-The planned CI/CD workflow includes:
-
-- Automated backend tests.
-- Frontend build and validation.
-- Pull request checks.
-- Automated deployments when changes are merged into `main`.
-
-## Roadmap
-
-- [ ] Complete responsive layouts.
-- [ ] Add automated backend and frontend tests.
-- [ ] Configure GitHub Actions CI.
-- [ ] Deploy the backend and database.
-- [ ] Deploy the frontend.
-- [ ] Implement authentication and user-specific task lists.
-
-## License
-
-This project is currently developed as a personal full-stack learning and portfolio project.
+```http
+GET /task-lists/{taskListId}/tasks?page=0&size=10
+GET
