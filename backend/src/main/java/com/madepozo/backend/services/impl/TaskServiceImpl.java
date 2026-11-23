@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.madepozo.backend.domain.entities.Task;
@@ -61,8 +63,12 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getAllTasksByTaskListId(UUID taskListId) {
-        return taskRepository.findByTaskListId(taskListId);
+    public Page<Task> getAllTasksByTaskListId(UUID taskListId, TaskStatus status, Pageable pageable) {
+        if (status == null) {
+            return taskRepository.findByTaskList_Id(taskListId, pageable);
+        }
+
+        return taskRepository.findByTaskList_IdAndStatus(taskListId, status, pageable);
     }
 
     @Override

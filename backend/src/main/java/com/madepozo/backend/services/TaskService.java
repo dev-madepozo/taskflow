@@ -1,14 +1,17 @@
 package com.madepozo.backend.services;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.madepozo.backend.domain.entities.Task;
+import com.madepozo.backend.domain.enums.TaskStatus;
 
 public interface TaskService {
 
-    List<Task> getAllTasksByTaskListId(UUID taskListId);
+    Page<Task> getAllTasksByTaskListId(UUID taskListId, TaskStatus status, Pageable pageable);
 
     Task createTask(UUID taskListId, Task task);
 
